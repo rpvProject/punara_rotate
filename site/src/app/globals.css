@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+/* Punara canon palette (_canon.md §12) — same tokens as Lens (lens/web).
+   Teal/Ember are semantic only: teal = good delta, ember = leak/risk.
+   Marigold is scarce — "act here". */
+@theme inline {
+  --color-nightfall: #101623;
+  --color-bone: #faf7f0;
+  --color-marigold: #f2a413;
+  --color-teal: #0fa284;
+  --color-ember: #e0533d;
+  --color-graphite: #5a6272;
+  --color-panel: #151c2b;
+  --color-panel2: #1b2334;
+
+  /* Text-grade semantic tokens for light (Bone) context — the bright ember/
+     teal fail WCAG AA as running text on bone. Use these for sentences and
+     small figures; keep the bright tokens for bars, dots, and dark context. */
+  --color-ember-text: #b23a28; /* ~5.2:1 on bone */
+  --color-teal-text: #0b7a63; /* ~4.9:1 on bone */
+
+  /* contextual — flip inside .dark-section */
+  --color-bg: var(--bg);
+  --color-ink: var(--ink);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-muted: var(--muted);
+
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-plex);
+}
+
+/* Light (Bone) context — the marketing default */
+:root {
+  --bg: #faf7f0;
+  --ink: #101623;
+  --surface: #ffffff;
+  --line: rgba(90, 98, 114, 0.25); /* graphite @ 25% */
+  --muted: #5a6272;
+}
+
+/* Nightfall context — hero, final CTA. Values from lens/web globals.css. */
+.dark-section {
+  --bg: #101623;
+  --ink: #faf7f0;
+  --surface: #151c2b;
+  --line: #232b3d;
+  --muted: #9aa3b5;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+::selection {
+  background: rgba(242, 164, 19, 0.25);
+}
+
+/* every metric aligns */
+.num {
+  font-family: var(--font-plex), monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Visible keyboard focus in both contexts — --ink flips with the section, so
+   the ring is Nightfall on Bone and Bone on Nightfall (max contrast). */
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: #f2a413;
+  color: #101623;
+  padding: 0.5rem 1rem;
+}
+.skip-link:focus {
+  left: 0;
+}

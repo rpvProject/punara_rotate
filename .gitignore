@@ -1,0 +1,18 @@
+.venv/
+venv/
+node_modules/
+__pycache__/
+*.pyc
+*.db
+*.duckdb
+.next/
+.env
+dist/
+build/
+*.egg-info/
+.pytest_cache/
+.DS_Store
+
+# marketing site
+site/.screenshots/
+site/data/

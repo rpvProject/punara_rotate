@@ -1,0 +1,81 @@
+name: Deploy site to GitHub Pages (optional fallback — manual only)
+
+# The active host is Vercel (see docs/DEPLOY_GUIDE.md). This GitHub Pages
+# workflow is kept as an optional fallback and is MANUAL-ONLY so it does not
+# auto-run on pushes. To use GitHub Pages instead, set the repo Variables below,
+# set Settings -> Pages -> Source = "GitHub Actions", then run it from Actions.
+#
+# Builds site/ as a Next.js static export (out/) and publishes it to GitHub Pages.
+#
+# These must exist at deploy time (Settings -> Secrets and variables -> Actions ->
+# Variables tab -> repository Variables) or the build ships with local defaults:
+#   SITE_URL        e.g. https://YOUR_DOMAIN  (canonical URL: metadata, OG, sitemap)
+#   BOOKING_URL     Cal.com/Calendly link     (every "Book a Strategy Call" CTA)
+#   WEB3FORMS_KEY   public Web3Forms key       (contact form; empty -> mailto fallback)
+#   CUSTOM_DOMAIN   YOUR_DOMAIN (optional)     (written to out/CNAME for the apex)
+#   GA4_ID / META_PIXEL_ID / LINKEDIN_TAG_ID   (optional analytics; empty -> no scripts)
+# Plus: Settings -> Pages -> Source = "GitHub Actions" (one-time, in the repo UI).
+#
+# Action versions are pinned to current stable majors; they must be resolvable
+# on the runner at deploy time.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Serialize deploys; never cancel a publish that is already mid-flight.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build static export
+        run: npm run build
+        env:
+          STATIC_EXPORT: "1"
+          NEXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL }}
+          NEXT_PUBLIC_BOOKING_URL: ${{ vars.BOOKING_URL }}
+          NEXT_PUBLIC_WEB3FORMS_KEY: ${{ vars.WEB3FORMS_KEY }}
+          # Optional analytics — empty variable => no tracking script, no cookie banner.
+          NEXT_PUBLIC_GA4_ID: ${{ vars.GA4_ID }}
+          NEXT_PUBLIC_META_PIXEL_ID: ${{ vars.META_PIXEL_ID }}
+          NEXT_PUBLIC_LINKEDIN_TAG_ID: ${{ vars.LINKEDIN_TAG_ID }}
+
+      - name: Write CNAME for the custom domain
+        if: ${{ vars.CUSTOM_DOMAIN != '' }}
+        run: echo "${{ vars.CUSTOM_DOMAIN }}" > out/CNAME
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/out
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

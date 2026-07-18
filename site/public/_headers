@@ -1,0 +1,20 @@
+# Security + caching headers for static hosts that read _headers
+# (Cloudflare Pages and Netlify both support this file; it is copied verbatim
+# from public/ into out/ at build time). GitHub Pages ignores it — use a host
+# that supports headers if these matter to you.
+
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), interest-cohort=()
+  Strict-Transport-Security: max-age=31536000
+  # Content-Security-Policy is intentionally NOT set by default: a strict CSP
+  # would break the Cal.com/Calendly booking embed and the optional GA4 / Meta /
+  # LinkedIn scripts the moment you enable them. Enable + tune this once those
+  # are finalized. Starter policy (add analytics/booking hosts as needed):
+  # Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https://api.web3forms.com; form-action 'self' https://api.web3forms.com; frame-ancestors 'none'; base-uri 'self'
+
+# Content-hashed build assets never change under the same URL — cache forever.
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable

@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+/* Punara canon palette (_canon.md §12). Teal/Ember are semantic only:
+   teal = good delta, ember = leak/risk. Marigold is scarce — "act here". */
+@theme inline {
+  --color-nightfall: #101623;
+  --color-panel: #151c2b;
+  --color-panel2: #1b2334;
+  --color-bone: #faf7f0;
+  --color-marigold: #f2a413;
+  --color-teal: #0fa284;
+  --color-ember: #e0533d;
+  --color-graphite: #5a6272;
+  --color-muted: #9aa3b5;
+  --color-line: #232b3d;
+  --color-series-new: #5b7fd9; /* validated pair with teal on Nightfall */
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-plex);
+}
+
+body {
+  background: #101623;
+  color: #faf7f0;
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+::selection {
+  background: rgba(242, 164, 19, 0.25);
+}
+
+/* every metric aligns */
+.num {
+  font-family: var(--font-plex), monospace;
+  font-variant-numeric: tabular-nums;
+}

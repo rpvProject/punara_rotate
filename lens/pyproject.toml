@@ -1,0 +1,35 @@
+[project]
+name = "punara-lens"
+version = "0.1.0"
+description = "Punara Lens v0 — customer-intelligence platform (local-only, SQLite+DuckDB)"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "sqlalchemy>=2.0",
+    "pydantic>=2",
+    "pydantic-settings",
+    "duckdb",
+    "pandas",
+    "numpy",
+    "httpx",
+    "faker",
+    # Phase 2 ML only (CONTRACTS.md V2.3): BG/NBD + Gamma-Gamma fit via
+    # scipy.optimize (lifetimes is unmaintained); churn bands via sklearn
+    # HistGradientBoosting (xgboost skipped: native-DLL friction on Windows).
+    "scipy",
+    "scikit-learn",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["lens*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
